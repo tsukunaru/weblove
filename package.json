@@ -1,0 +1,7 @@
+{
+  "name": "weblove-studio",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {"dev":"next dev -p 3017","build":"next build","start":"next start -H 127.0.0.1 -p 3017","test":"node --test test/*.test.mjs"},
+  "dependencies": {"next":"16.4.6","react":"19.3.1","react-dom":"19.3.1","three":"0.187.0","lenis":"1.3.27","@fontsource-variable/inter-tight":"5.3.0"}
+}
