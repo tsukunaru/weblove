@@ -2,7 +2,7 @@
 import {useEffect,useRef,useState} from "react";
 import Lenis from "lenis";
 import {attachDragScroll} from "../lib/drag-scroll.mjs";
-import {clamp,ramp,stops,services,projects} from "../lib/story.mjs";
+import {clamp,ramp,homePan,stops,services,projects} from "../lib/story.mjs";
 
 const arrow=<span className="arrow" aria-hidden="true">↗</span>;
 function Mark(){return <svg viewBox="0 0 28 34" aria-hidden="true"><path fill="#e60038" d="M1 1h19l7 7v25H1z"/><path fill="#1a1217" d="m14 6 1.4 6.3 5.7-3.2-3.1 5.2 6.1 2.3-6.4 1.2 3.9 5.5-6-3.1-1.6 7.3-1.6-6.9-5.8 3.2 3.5-5.5-6.2-1.5 6.1-2.1-3.3-5.3 5.9 3.2z"/></svg>;}
@@ -30,7 +30,7 @@ export default function Studio(){
     const releaseDrag=attachDragScroll(canvas.current.parentElement,smooth,live.current);
     const scope=Object.fromEntries(Object.entries({
       "--bar":".progress","--work-x":".work-track","--studio-x":".services",
-      "--drift-x":".gallery-intro","--hero-y":".hero","--badge-y":".contact","--flyby":".w0",
+      "--drift-x":".gallery-intro","--hero-x":".screen","--badge-y":".contact","--flyby":".w0",
       "--dark":".charcoal","--black":".night","--red":".atmosphere.red"
     }).map(([name,selector])=>[name,el.querySelector(selector)]));
     const previous=Object.create(null);
@@ -45,7 +45,7 @@ export default function Studio(){
       const hero=1-ramp(.07,.53,p), drift=ramp(.18,.67,p)*(1-ramp(1.19,1.51,p)),studio=ramp(1.12,1.52,p)*(1-ramp(2.14,2.62,p));
       const work=ramp(2.23,2.76,p)*(1-ramp(4.44,4.83,p)),contact=ramp(4.45,4.90,p);
 
-      css("--hero",hero);css("--hero-y",(-13*(1-hero))+"vh");css("--drift",drift);
+      css("--hero",hero);css("--hero-x",(-100*homePan(p))+"vw");css("--drift",drift);
       css("--drift-x",((.84-clamp(p,.17,1.52))*68)+"vw");css("--studio",studio);css("--studio-x",((1-ramp(1.1,1.65,p))*37-ramp(2.12,2.58,p)*67)+"vw");
       css("--work",work);css("--work-x",((2.92-clamp(p,2.21,4.84))*70)+"vw");css("--contact",contact);
       css("--dark",ramp(1.04,1.48,p));css("--black",ramp(2,2.58,p));css("--red",ramp(3.15,4.88,p));
