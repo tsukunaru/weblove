@@ -21,8 +21,10 @@ export default function Studio(){
   function open(value){opener.current=document.activeElement;setDownloaded(false);setPanel(value);}
   useEffect(()=>{
     const mq=matchMedia("(prefers-reduced-motion: reduce)");
-    const preference=()=>{live.current.reduced=mq.matches;};preference();mq.addEventListener("change",preference);
-    const smooth=new Lenis({duration:1,smoothWheel:!mq.matches});lenis.current=smooth;
+    const smooth=new Lenis({lerp:.052,smoothWheel:!mq.matches});lenis.current=smooth;
+    const preference=()=>{
+      live.current.reduced=mq.matches;smooth.options.smoothWheel=!mq.matches;
+    };preference();mq.addEventListener("change",preference);
     let raf=0,cancelled=false,stage,previousP=NaN,activeSection="home";
     const el=root.current;
     const releaseDrag=attachDragScroll(canvas.current.parentElement,smooth,live.current);
