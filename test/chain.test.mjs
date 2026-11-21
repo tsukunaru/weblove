@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {CatmullRomCurve3,Vector3} from "three";
 import {homePan,ramp} from "../lib/story.mjs";
-import {chainPath,setChainCurve,swayAtPointer} from "../lib/chain.mjs";
+import {chainPath,setChainCurve,swayAtPointer,createChainSwing} from "../lib/chain.mjs";
 import {wrapChain,maxKeyRadius} from "../lib/shell.mjs";
 
 test("the camera passes the same loop and reveals its outgoing strand",()=>{
@@ -31,4 +31,21 @@ test("a hover flexes a nearby link, preserves remote anchors and clears the keys
   assert.ok(near.length()>(maxKeyRadius+.54)+.62*.66);
   const released=origin.clone();swayAtPointer(released,.2,.3,0);
   assert.ok(released.equals(origin));
+});
+
+test("a fast pass between links triggers a local rebound that settles without further pointer events",()=>{
+  function simulate(hz){
+    const swing=createChainSwing([new Vector3(),new Vector3(0,3,0)]);
+    swing.pluck(-2,0,2,0,false);
+    const path=[];
+    for(let frame=0;frame<hz*4;frame++){
+      swing.advance(1/hz);path.push(swing.offset[0]);
+      assert.equal(swing.offset[1],0);
+    }
+    assert.ok(Math.max(...path)>.32 && Math.min(...path)<-.10);
+    assert.equal(swing.advance(1/hz),false);assert.equal(swing.offset[0],0);
+    return path;
+  }
+  const slow=simulate(30),fast=simulate(120);
+  assert.ok(Math.abs(slow[14]-fast[59])<1e-5);
 });
